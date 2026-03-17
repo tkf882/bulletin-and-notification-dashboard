@@ -1,0 +1,154 @@
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+
+  padding-top: 90px;
+  padding-right: 250px;
+  padding-left: 20px;
+  padding-bottom: 20px;
+
+}
+
+.main-content-header {
+  font-size: 60px;
+  background: linear-gradient(to left, rgb(243, 117, 176), rgb(243, 84, 84));
+  background-clip: text;
+  color: transparent;
+}
+
+.main-content-select {
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  padding: 4px;
+
+  border: none;
+  border-radius: 4px;
+
+}
+
+.main-search {
+  margin-left: 5px;
+  margin-right: 5px;
+
+  padding: 4px;
+
+  border: none;
+  border-radius: 4px;
+
+}
+
+.tags-container {
+  margin-bottom: 20px;
+}
+
+.tag, .tag-selected, .tag-create {
+  margin: 2px 2px;
+
+  padding: 4px;
+
+  border: none;
+  border-radius: 3px;
+
+  background-color: rgb(238, 238, 238);
+
+  cursor: pointer;
+}
+.tag:hover {
+  background-color: white;
+}
+.tag:active {
+  background-color: rgb(214, 214, 214);
+}
+
+.tag-selected {
+  color: rgb(167, 170, 187);
+  background-color: rgb(71, 73, 82);
+}
+.tag-selected:hover {
+  background-color: rgb(97, 101, 116);
+}
+.tag-selected:active {
+  background-color: rgb(71, 73, 82);
+}
+.tag-selected::after {
+  content: " \2a2f";
+  padding: 0px;
+}
+
+.tag-create {
+  border-style: dashed;
+  border-width: 1px;
+  background-color: rgba(0, 0, 0, 0);
+}
+.tag-create:hover {
+  filter: brightness(150%);
+}
+.tag-create:active {
+  filter: brightness(100%);
+}
+
+.welcome-container {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.welcome-button {
+  padding: 4px;
+
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 5px;
+
+  border: none;
+  border-radius: 3px;
+
+  background-color: rgb(238, 238, 238);
+
+  cursor: pointer;
+}
+.welcome-button:hover {
+  background-color: white;
+}
+.welcome-button:active {
+  background-color: rgb(214, 214, 214);
+}
+
+.welcome-text {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.welcome-input {
+  padding: 4px;
+
+  border: none;
+  border-radius: 4px;
+}
+
+.overlay {
+  position: fixed;
+  z-index: 30;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: rgba(0, 0, 0, 0.5 );
+}

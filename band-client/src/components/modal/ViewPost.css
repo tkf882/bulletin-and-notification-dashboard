@@ -1,0 +1,15 @@
+.comment-input-container {
+  
+}
+
+.comment-input {
+  width: 100%;
+  min-height: 100px;
+  resize: vertical;
+}
+
+.comment-button {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+

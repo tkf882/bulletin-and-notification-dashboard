@@ -1,0 +1,49 @@
+.post {
+  position: relative;
+
+  min-height: 280px;
+  min-width: 280px;
+  padding: 10px;
+
+  background-color: rgb(71, 73, 82);
+
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.05s,
+    background-color 0.05s;
+
+}
+
+.post:hover {
+  transform: scale(1.005);
+  background-color: rgb(97, 101, 116);
+}
+
+.post:active {
+  transform: scale(1.0);
+  background-color: rgb(71, 73, 82);
+}
+
+.post-gradient {
+  position: absolute;
+
+  width: 100%;
+  height: 60%;
+
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+
+  border-radius: 10px;
+
+  pointer-events: none;
+
+  background-image: linear-gradient(to top, rgba(71, 73, 82, 0.9), rgba(0, 0, 0, 0));
+}
+
+.post-tag {
+  pointer-events: none;
+}

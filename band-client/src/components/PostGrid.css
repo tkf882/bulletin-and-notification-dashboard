@@ -1,0 +1,15 @@
+.post-grid {
+  flex: 1;
+
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  /* grid-template-columns: 1fr 1fr 1fr 1fr; */
+  
+  width: 100%;
+  row-gap: 20px;
+  column-gap: 20px;
+
+  
+
+
+}

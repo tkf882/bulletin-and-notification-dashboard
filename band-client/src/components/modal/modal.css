@@ -1,0 +1,46 @@
+.modal {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+
+  width: 50%;
+
+  overflow-y: scroll;
+  overflow-x: hidden;
+
+  background-color: rgb(29, 30, 34);
+  border-radius: 10px;
+}
+.modal h2 {
+  margin-bottom: 5px;
+}
+
+.modal-tag {
+  pointer-events: none;
+}
+
+.modal-container {
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.close-svg {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  height: 30px;
+  width: 30px;
+
+  filter: brightness(0) saturate(100%) invert(80%) sepia(7%) saturate(473%) hue-rotate(194deg) brightness(85%) contrast(89%);
+
+  cursor: pointer;
+}

@@ -1,0 +1,18 @@
+.header {
+  position: fixed;
+  z-index: 10;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+
+  height: 70px;
+
+  padding-left: 20px;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  
+  background-color: rgb(29, 30, 34);    
+}

@@ -1,0 +1,53 @@
+body {
+  padding: 0;
+  margin: 0;
+  /* height: 100vh; */
+  /* min-height: 100%; */
+
+  font-family: "LINE Seed JP", "Raleway", sans-serif;
+
+  background-color: rgb(29, 30, 34);
+
+  /* color: #9598a7; */
+  
+}
+
+h1 {
+  font-size: 45px;
+  color: rgb(167, 170, 187);
+  margin: 0;
+}
+
+h2 {
+  font-size: 26px;
+  color: rgb(167, 170, 187);
+  margin: 0;
+}
+
+h3 {
+  font-size: 18px;
+  color: rgb(167, 170, 187);
+  margin: 0;
+}
+
+p, a {
+  color: rgb(167, 170, 187);
+  margin: 0;
+  text-decoration: none;
+}
+
+button {
+  font-family: "LINE Seed JP", "Raleway", sans-serif;
+  color: rgb(109, 112, 124);
+  cursor: pointer;
+}
+
+input {
+  font-family: "LINE Seed JP", "Raleway", sans-serif;
+  color: rgb(109, 112, 124);
+}
+
+textarea {
+  font-family: "LINE Seed JP", "Raleway", sans-serif;
+  color: rgb(109, 112, 124);
+}
