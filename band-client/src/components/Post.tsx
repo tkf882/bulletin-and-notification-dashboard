@@ -1,13 +1,30 @@
+import type { posts } from '../types/posts';
+
 import './Post.css'
 
-export function Post() {
+interface postProps {
+  post:posts;
+  setModal: (value: {type: number, pid: number}) => void;
+}
+export function Post({post, setModal}:postProps) {
+  // console.log(post.content);
+
+  function handleClick() {
+    setModal({type: 1, pid: post.pid});
+  }
+
   return (
-    <div className="post">
+    <div className="post" onClick={handleClick}>
       <div className="post-gradient"></div>
-      <button className="tag post-tag">Open</button>
-      <h1>Title</h1>
-      <h2>username . 03 09 2026</h2>
-      <p>this is the post description. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Labore earum eaque sed quis! Inventore, delectus officiis vitae ullam in facilis cumque rerum fugit tempora dolore saepe molestiae neque ex dolores. delectus officiis vitae ullam in facilis cumque rerum fugit tempora dolore saepe molestiae neque ex dolores. delectus officiis vitae ullam in facilis cumque rerum fugit tempora dolore saepe molestiae neque ex dolores.</p>
+      <div className="post-top">
+        <button className="tag post-tag">Open</button>
+        <p>{post.date}</p>
+      </div>
+      
+      <h1>{post.title}</h1>
+      <h2 style={{marginBottom:'20px'}}>{post.username}</h2>
+      
+      <p>{post.content}</p>
     </div>
   )
 }

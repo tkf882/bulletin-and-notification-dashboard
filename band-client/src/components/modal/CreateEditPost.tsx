@@ -3,10 +3,20 @@ import close from '../../assets/close-svg.svg';
 import './CreateEditPost.css'
 import './modal.css'
 
-export function CreateEditPost() {
+
+interface createEditPostProps {
+  modal: {type: number, pid: number};
+  setModal: (value: {type: number, pid: number}) => void;
+}
+export function CreateEditPost({modal, setModal}:createEditPostProps) {
+
+  function handleClose() {
+    setModal({type: 0, pid: -1});
+  }
+
   return (
     <div className="modal">
-      <img className="close-svg" src={close}/>
+      <img className="close-svg" src={close} onClick={handleClose}/>
       <div className="modal-container" >
         <h1>Create post</h1>
         <h1>Edit post</h1>

@@ -1,20 +1,40 @@
 import { Comment } from './Comment';
+import type { posts } from '../../types/posts';
 
 import close from '../../assets/close-svg.svg';
 
 import './ViewPost.css'
 import './modal.css'
 
-export function ViewPost() {
+interface viewPostModal {
+  modal: {type: number, pid: number};
+  setModal: (value: {type: number, pid: number}) => void;
+  postList: posts[];
+}
+export function ViewPost({modal, setModal, postList}:viewPostModal) {
+  let currentPost:posts = postList[0];
+
+  function handleClose() {
+    setModal({type: 0, pid: -1});
+  }
+
+  postList.forEach((post) => {
+    if (post.pid === modal.pid) {
+      currentPost = post;
+    }
+  })
+
+
   return (
     <div className="modal">
-      <img className="close-svg" src={close}/>
+      <img className="close-svg" src={close} onClick={handleClose}/>
       <div className="modal-container" >
-        <button className="tag modal-tag">Open</button>
+        <button className="tag modal-tag">{currentPost.status === 1 ? 'Open' : 'Closed'}</button>
         <button className="tag-create">Mark as Closed</button>
-        <h1>Title</h1>
-        <h2>username . 03 09 2026</h2>
-        <p>this is the post description. Lorem ipsum dolor sit amet consectetur, adipisicing elit. Labore earum eaque sed quis! Inventore, delectus officiis vitae ullam in facilis cumque rerum fugit tempora dolore saepe molestiae neque ex dolores. delectus officiis vitae ullam in facilis cumque rerum fugit tempora dolore saepe molestiae neque ex dolores. delectus officiis vitae ullam in facilis cumque rerum fugit tempora dolore saepe molestiae neque ex dolores.</p>
+        <p>{currentPost.date}</p>
+        <h1>{currentPost.title}</h1>
+        <h2>Posted by: {currentPost.username}</h2>
+        <p>{currentPost.content}</p>
       </div>
       <div className="modal-container">
         {/* <h2>Tags</h2> */}

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .path-route {
+        font-size: 20px;
+        font-weight: 700;
+      }
+      .description {
+        margin-left: 40px;
+        width: 800px;
+      }
+
+      .example-code pre {
+        font-size: 16px;
+        border: 1px solid rgb(150, 150, 150);
+        border-radius: 4px;
+        padding: 15px;
+        margin-top: 7px;
+        overflow: hidden;
+        overflow-x: auto;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <h1 id="top">Documentation Page</h1>
+    <p>This page is the documentation for the band-server</p>
+
+    <h2>Intro</h2>
+    <p>Send an HTTP request to the URL: http://localhost:5000/</p>
+
+    <h2>List of Paths/Routes</h2>
+    <a class="path-route" href="http://localhost:5000/#get-slash">GET /</a>
+    <br/>
+    <a class="path-route" href="http://localhost:5000/#get-posts">GET /posts</a>
+
+    <h1>GET Requests</h1>
+
+    <h2 id="get-slash">GET /</h2>
+    <div class="description">
+      <h3>Description</h3>
+      <p>Returns the documentation page (this page)</p>
+      <h3>Response</h3>
+      <code class="example-code">
+        <pre>(This page)</pre>
+      </code>
+      <a href="http://localhost:5000/#top">Back to top</a>
+    </div>
+
+    <h2 id="get-posts">GET /posts</h2>
+    <div class="description">
+      <h3>Description</h3>
+      <p>Returns all posts if authenticated by middleware</p>
+      <h3>Response</h3>
+      <code class="example-code">
+        <pre>[{
+  "pid":1,
+  "user_id":1,
+  "username":"sisyphus",
+  "title":"Hello, my name is sisyphus",
+  "content":"This is my first post.",
+  "tags":"",
+  "date":"18:06:35 - 19/03/2026",
+  "status":1,
+  "comment":0,
+  "parent":null
+},{
+  "pid":2,
+  "user_id":2,
+  "username":"newaccount",
+  "title":"Hello, my name is newaccount",
+  "content":"This is my first post.",
+  "tags":"",
+  "date":"18:12:08 - 19/03/2026",
+  "status":1,
+  "comment":0,
+  "parent":null
+},{
+  ...
+}]
+        </pre>
+      </code>
+      <a href="http://localhost:5000/#top">Back to top</a>
+    </div>
+
+
+    <h1>POST Requests</h1>
+
+  </body>
+
+</html>

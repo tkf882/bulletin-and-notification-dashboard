@@ -1,23 +1,24 @@
 import { Post } from './Post';
+import type { posts } from '../types/posts';
 
 import './PostGrid.css'
 
-export function PostGrid() {
+interface postGridProps {
+  posts:posts[];
+  setModal: (value: {type: number, pid: number}) => void;
+}
+export function PostGrid({posts, setModal}:postGridProps) {
+  
   return (
     <div className="post-grid">
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
-      <Post/>
+      {posts.map((p) => {
+        if (p.parent === null) {
+          return <Post key={p.pid} post={p} setModal={setModal}/>
+        } else {
+          return '';
+        }
+      })}
+
     </div>
   )
 }

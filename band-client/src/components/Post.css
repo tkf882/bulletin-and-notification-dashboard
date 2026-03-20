@@ -9,12 +9,13 @@
 
   border-radius: 10px;
 
+  overflow: hidden;
+
   cursor: pointer;
 
   transition:
     transform 0.05s,
     background-color 0.05s;
-
 }
 
 .post:hover {
@@ -46,4 +47,13 @@
 
 .post-tag {
   pointer-events: none;
+}
+
+.post-top {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+  width: 100%;
 }

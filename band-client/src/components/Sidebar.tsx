@@ -4,7 +4,15 @@ import close from '../assets/close-svg.svg';
 
 import './Sidebar.css'
 
-export function Sidebar() {
+interface sidebarProps {
+  setModal: (value: {type: number, pid: number}) => void;
+}
+export function Sidebar({setModal}:sidebarProps) {
+
+  function handleCreatePost() {
+    setModal({type: 2, pid: -1});
+  }
+
   return (
     <div className="sidebar">
       <div className="sidebar-top">
@@ -20,7 +28,7 @@ export function Sidebar() {
         <img className="profile-picture" src={pfp}/>
       </div>
       <div className="sidebar-user-actions">
-        <button className="create-button"><h3>Create</h3></button>
+        <button className="create-button" onClick={handleCreatePost}><h3>Create</h3></button>
       </div>
 
     </div>
