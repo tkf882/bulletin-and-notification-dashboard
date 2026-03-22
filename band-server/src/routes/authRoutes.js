@@ -26,7 +26,8 @@ router.post('/register', (req, res) => {
     const postTitle = `Hello, my name is ${username}`;
     const postContent = "This is my first post.";
     const tags = "";
-    const date = dayjs().format('HH:mm:ss - DD/MM/YYYY');
+    // const date = dayjs().format('HH:mm:ss - DD/MM/YYYY');
+    const date = dayjs().format('YYYY/MM/DD - HH:mm:ss');
     const insertPost = db.prepare(`
       INSERT INTO posts(user_id, username, title, content, tags, date, status, parent)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -35,7 +36,8 @@ router.post('/register', (req, res) => {
 
     // create token
     const token = jwt.sign({id: result.lastInsertRowid}, process.env.JWT_SECRET, {expiresIn: '24h'});
-    res.json({ token })
+    // res.json({ token })
+    res.json({ token: token, uid: result.lastInsertRowid, username: username })
 
   } catch(err) {
     console.log(err.message);
@@ -60,8 +62,10 @@ router.post('/login', (req, res) => {
     if (!passwordIsValid) {return res.status(401).send({message: "Invalid password"})}
 
     // sign and send back token
-    const token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: '24h'});
-    res.json({ token })
+    const token = jwt.sign({id: user.uid}, process.env.JWT_SECRET, {expiresIn: '24h'});
+    // res.json({ token })
+    // res.json({ token: token, uid: result.lastInsertRowid })
+    res.json({ token: token, uid: user.uid, username: username })
 
   } catch(err) {
     console.log(err);

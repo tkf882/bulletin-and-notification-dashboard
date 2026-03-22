@@ -20,7 +20,6 @@ db.exec(`
     tags TEXT,
     date TEXT,
     status BOOLEAN DEFAULT 1,
-    comment BOOLEAN DEFAULT 0,
     parent INTEGER DEFAULT NULL,
     FOREIGN KEY(user_id) REFERENCES users(uid)
   )    

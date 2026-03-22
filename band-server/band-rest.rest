@@ -36,3 +36,34 @@ Content-Type: application/json
   "username": "sisyphus@gmail.com",
   "password": "wrongpass"
 }
+
+### Fetch all posts GET /posts (protected)
+GET http://localhost:5000/posts
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0MTQxMTA2LCJleHAiOjE3NzQyMjc1MDZ9.7hPdMpvTj_ckBjbtVWq1koQkt3D0BvdcpShOpGGSJks
+
+### Creates a new post POST /posts (protected)
+POST http://localhost:5000/posts
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0MTQxMTA2LCJleHAiOjE3NzQyMjc1MDZ9.7hPdMpvTj_ckBjbtVWq1koQkt3D0BvdcpShOpGGSJks
+Content-Type: application/json
+
+{
+  "title": "title",
+  "content": "this is the post content",
+  "username": "sisyphus@gmail.com",
+  "parent": null
+}
+
+### Update a post PUT /posts/:id (protected)
+PUT http://localhost:5000/posts/2
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0MTQxMTA2LCJleHAiOjE3NzQyMjc1MDZ9.7hPdMpvTj_ckBjbtVWq1koQkt3D0BvdcpShOpGGSJks
+
+{
+  "title": "new title",
+  "content": "new content"
+}
+
+
+### Delete a post DELETE /posts/:id (protected)
+DELETE http://localhost:5000/posts/2
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0MTQxMTA2LCJleHAiOjE3NzQyMjc1MDZ9.7hPdMpvTj_ckBjbtVWq1koQkt3D0BvdcpShOpGGSJks

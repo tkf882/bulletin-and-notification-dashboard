@@ -12,15 +12,17 @@
   width: 100%;
 }
 
-.confirm-button-container {
+.create-edit-confirm-button-container {
   display: flex;
   justify-content: end;
+  align-items: center;
 
   width: 100%;
 }
-.confirm-button {
+.create-edit-confirm-button {
   /* font-size: 20px; */
   padding: 10px 15px;
+  margin-left: 10px;
 
   cursor: pointer;
 }

@@ -1,6 +1,3 @@
-
-// Adapts and references code from https://github.com/jamezmca/backend-full-course
-
 import { PostGrid } from './components/PostGrid';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
@@ -9,15 +6,27 @@ import { ViewPost } from './components/modal/ViewPost';
 import { CreateEditPost } from './components/modal/CreateEditPost';
 
 import { useState, useRef, useEffect } from 'react'
-import type { posts } from './types/posts';
+// import type { posts } from './types/posts.ts';
+import type { users } from './types/users.ts';
 
 import './App.css'
 
 function App() {
-  let token = localStorage.getItem('token');
+  // let user:users = {
+  //   token: localStorage.getItem('token'),
+  //   uid: Number(localStorage.getItem('uid') || -1),
+  //   username: localStorage.getItem('username')
+  // }
+  const userLocal = localStorage.getItem('userInfo');
+  let user:users = userLocal ? JSON.parse(userLocal) : {token: null, uid: -1, username: ''};
+  // console.log(user);
+
+  // let token = localStorage.getItem('token');
+  // let uid:number = Number(localStorage.getItem('uid') || -1);
+  // let uid = useRef(-1);
+
   // let posts:posts[] = [];
   const posts = useRef([]);
-  const selectedPost = useRef(null);
 
   // const apiBase = '/'
   const apiBase = 'http://localhost:5000/'
@@ -26,7 +35,7 @@ function App() {
   const [isRegistration, setIsRegistration] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [modal, setModal] = useState({type: 0, pid: -1}); // 0: none, 1: view post, 2: create/edit post
+  const [modal, setModal] = useState({type: 0, pid: -1}); // 0: none, 1: view post, 2: create post, 3: edit post
 
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
@@ -47,18 +56,19 @@ function App() {
 
   async function fetchPosts() {
     setIsLoading(true);
-    if (token === null) {
+    if (user.token === null) {
       setIsLoading(false);
       return;
     }
-    console.log(`Fetching posts with token: ${token}`)
+    console.log(`Fetching posts with token: ${user.token}`)
+    // console.log(`uid is ${uid.current}`);
     const response = await fetch(apiBase + 'posts', {
-      headers: { 'Authorization': token }
+      headers: { 'Authorization': user.token }
     })
     const postsData = await response.json();
 
     posts.current = postsData;
-    console.log(posts)
+    console.log(posts);
     setIsLoading(false);
   }
 
@@ -93,7 +103,7 @@ function App() {
         setErrorMessage('Username Error: Username too short (must be at least 3 characters)');
         return;
       } else if (usernameString.length > 15) {
-        setErrorMessage('Username Error: Username too short (maximum 15 characters)');
+        setErrorMessage('Username Error: Username too long (maximum 15 characters)');
         return;
       }
 
@@ -134,19 +144,36 @@ function App() {
           body: JSON.stringify({ username: usernameString, password: passwordString })
         })
         data = await response.json()
+        console.log('logging in with:')
+        console.log(data);
       }
       
       if (data.token) {
         // setToken(data.token);
-        token = data.token;
-        localStorage.setItem('token', data.token);
+        user.token = data.token;
+        user.uid = data.uid;
+        user.username = data.username;
+
+        localStorage.setItem('userInfo', JSON.stringify({
+          token: data.token,
+          uid: data.uid,
+          username: data.username
+        }));
+
+
+
+        // localStorage.setItem('token', data.token);
+        // localStorage.setItem('uid', data.uid);
+        // localStorage.setItem('username', data.username);
 
         // setIsLoading(true);
         // console.log(token);
+        // console.log(uid);
         await fetchPosts();
 
       } else {
-        throw new Error('Failed to authenticate.');
+        throw new Error(`Authentication error: ${data.message}`);
+        // throw new Error('Failed to authenticate.');
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -160,7 +187,7 @@ function App() {
     }
   }
 
-  if (token) {
+  if (user.token) {
     // console.log(token);
     
     // fetchPosts();
@@ -176,16 +203,23 @@ function App() {
               modal={modal}
               setModal={setModal}
               postList={posts.current}
+              user={user}
+              apiBase={apiBase}
+              fetchPosts={fetchPosts}
             />
           </div>
         }
 
         {
-          modal.type === 2 &&
+          (modal.type === 2 || modal.type === 3) &&
           <div className="overlay">
             <CreateEditPost
               modal={modal}
               setModal={setModal}
+              postList={posts.current}
+              apiBase={apiBase}
+              user={user}
+              fetchPosts={fetchPosts}
             />
           </div>
         }
@@ -194,6 +228,7 @@ function App() {
 
         <Sidebar
           setModal={setModal}
+          user={user}
         />
 
         <div className="main-content">
@@ -269,10 +304,6 @@ function App() {
 
 
 
-// 3:47
-
-
-
 
 
 
@@ -284,3 +315,6 @@ function App() {
 }
 
 export default App
+
+// References:
+// 1: https://github.com/jamezmca/backend-full-course
