@@ -2,6 +2,8 @@ import { Comment } from './Comment';
 import type { posts } from '../../types/posts';
 import type { users } from '../../types/users';
 
+import { useState, useRef, useEffect } from 'react'
+
 import close from '../../assets/close-svg.svg';
 
 import './ViewPost.css'
@@ -17,12 +19,46 @@ interface viewPostModal {
 }
 export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:viewPostModal) {
   // modal type 0: none, 1: view post, 2: create post, 3: edit post
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const commentList = useRef([]);
+  // let commentList:posts[] = [];
+  // const [commentList, setCommentList] = useState([]); // update when changed
+  const commentContentRef = useRef<any>(null);
+
   let currentPost:(posts | null) = null;
   postList.forEach((post) => {
     if (post.pid === modal.pid) {
       currentPost = post;
     }
   })
+
+  useEffect(() => {
+    console.log('here we go')
+    fetchComments();
+  }, [])
+
+  async function fetchComments() {
+    setIsLoading(true);
+    if (user.token === null || !currentPost) {
+      return;
+    }
+
+    const response = await fetch(apiBase + `posts/comments/${currentPost.pid}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': user.token
+      }
+    })
+    const commentsData = await response.json();
+
+    commentList.current = commentsData;
+    // commentList = commentsData;
+    // setCommentList(commentsData);
+    console.log('comment list from fetchComments():')
+    console.log(commentList);
+    setIsLoading(false);
+  }
 
   function handleClose() {
     setModal({type: 0, pid: -1});
@@ -33,8 +69,35 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
     setModal({type: 3, pid: currentPost.pid});
   }
 
-  function handlePostComment() {
+  async function handlePostComment() {
     console.log('create a comment');
+    const commentElem = commentContentRef.current;
+
+    if (!commentElem || !user.token || !currentPost) {return;}
+
+    const content = commentElem.value;
+    const parent:(number | null) = currentPost.pid;
+
+    if (content === '') {
+      setErrorMessage('Error: Please enter text into comment box');
+      return;
+    }
+
+    const response = await fetch(apiBase + 'posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': user.token
+      },
+      body: JSON.stringify({ title:'', content, username:user.username, parent })
+    })
+    const data = await response.json();
+    console.log(data);
+
+    commentElem.value = '';
+    setErrorMessage('');
+
+    await fetchComments();
   }
 
   async function handleDelete() {
@@ -51,11 +114,9 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
 
     fetchPosts();
     handleClose();
-
   }
 
-
-
+  console.log(`commment list length: ${commentList.current.length}`)
 
   return (
     <div className="modal">
@@ -78,15 +139,26 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
       </div>
       <div className="modal-container">
         <h2>Comments</h2>
-          <textarea className="comment-input" placeholder="Add comment"></textarea>
+          <textarea className="comment-input" placeholder="Add comment" ref={commentContentRef}></textarea>
           <button className="view-post-button" onClick={handlePostComment}>Submit</button>
-          
-          <Comment/>
-          <Comment/>
-          <Comment/>
-          <Comment/>
-          <Comment/>
-          <Comment/>
+          <p style={{color: 'red'}}>{errorMessage}</p>
+
+          {/* {
+            isLoading 
+            ? <p>Loading comments...</p>
+            : 
+              commentList.map((com) => {
+                console.log(`comment ${com}`)
+                return <Comment key={com['pid']} com={com}/>
+              })
+          } */}
+
+          {
+            commentList.current.map((com) => {
+              console.log(`comment ${com}`)
+              return <Comment key={com['pid']} com={com}/>
+            })
+          }
 
 
       </div>

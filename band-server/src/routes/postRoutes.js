@@ -18,9 +18,9 @@ router.get('/', (req, res) => {
 })
 
 // Get all posts with parent != null (i.e., comment), and parent = req.body.pid;
-router.get('/comments', (req, res) => {
-  const {pid} = req.body;
-  const getComments = db.prepare(`SELECT * FROM posts WHERE parent = ?`);
+router.get('/comments/:pid', (req, res) => {
+  const {pid} = req.params;
+  const getComments = db.prepare(`SELECT * FROM posts WHERE parent = ? ORDER BY date DESC`);
   const comments = getComments.all(pid);
 
   res.json(comments);
