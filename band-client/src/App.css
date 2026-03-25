@@ -45,8 +45,8 @@
 }
 
 .tag, .tag-selected, .tag-create {
+  height: 25px;
   margin: 2px 2px;
-
   padding: 4px;
 
   border: none;
@@ -64,6 +64,8 @@
 }
 
 .tag-selected {
+  height: 25px;
+  padding: 4px;
   color: rgb(167, 170, 187);
   background-color: rgb(71, 73, 82);
 }
@@ -75,7 +77,6 @@
 }
 .tag-selected::after {
   content: " \2a2f";
-  padding: 0px;
 }
 
 .tag-create {

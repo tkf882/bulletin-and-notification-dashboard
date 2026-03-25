@@ -1,6 +1,7 @@
 import { PostGrid } from './components/PostGrid';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
+import { Tag } from './components/Tag';
 
 import { ViewPost } from './components/modal/ViewPost';
 import { CreateEditPost } from './components/modal/CreateEditPost';
@@ -8,8 +9,11 @@ import { CreateEditPost } from './components/modal/CreateEditPost';
 import { useState, useRef, useEffect } from 'react'
 // import type { posts } from './types/posts.ts';
 import type { users } from './types/users.ts';
+// import type { tags } from './types/tags.ts';
+import type { tagFormat } from './types/tagFormat.ts';
 
 import './App.css'
+
 
 function App() {
   // let user:users = {
@@ -19,40 +23,34 @@ function App() {
   // }
   const userLocal = localStorage.getItem('userInfo');
   let user:users = userLocal ? JSON.parse(userLocal) : {token: null, uid: -1, username: ''};
-  // console.log(user);
 
-  // let token = localStorage.getItem('token');
-  // let uid:number = Number(localStorage.getItem('uid') || -1);
-  // let uid = useRef(-1);
-
-  // let posts:posts[] = [];
   const posts = useRef([]);
+  const tags = useRef<tagFormat[]>([]); // {{tid:number, tag:string}, selected:boolean}
 
-  // const apiBase = '/'
-  const apiBase = 'http://localhost:5000/'
+  const apiBase = 'http://localhost:5000/';
+  // const apiBase = 'http://192.168.1.94:5000/';
 
-  // const [token, setToken] = useState(localStorage.getItem('token'));
   const [isRegistration, setIsRegistration] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState({type: 0, pid: -1}); // 0: none, 1: view post, 2: create post, 3: edit post
+  const [search, setSearch] = useState('');
+  const searchRef = useRef<any>(null);
 
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
-
-
-  // const isLoading = useRef(false);
-  // const isAuthenticating = useRef(false);
 
   useEffect(() => {
     // token = localStorage.getItem('token');
     // setToken(localStorage.getItem('token'));
     fetchPosts();
+    fetchTags();
   }, [])
 
-  function handleToggleRegister() {
-    setIsRegistration(!isRegistration);
-  }
+  // fix async: Dont need fetch functions in other components. Refresh page after authentication valid to activate this use effect again
+  // https://devtrium.com/posts/async-functions-useeffect
+  // https://legacy.reactjs.org/docs/hooks-faq.html#is-it-safe-to-omit-functions-from-the-list-of-dependencies
+
 
   async function fetchPosts() {
     setIsLoading(true);
@@ -60,7 +58,7 @@ function App() {
       setIsLoading(false);
       return;
     }
-    console.log(`Fetching posts with token: ${user.token}`)
+    // console.log(`Fetching posts with token: ${user.token}`)
     // console.log(`uid is ${uid.current}`);
     const response = await fetch(apiBase + 'posts', {
       headers: { 'Authorization': user.token }
@@ -68,7 +66,30 @@ function App() {
     const postsData = await response.json();
 
     posts.current = postsData;
-    console.log(posts);
+    // console.log(posts);
+    setIsLoading(false);
+  }
+
+  async function fetchTags() {
+    setIsLoading(true);
+    if (user.token === null) {
+      setIsLoading(false);
+      return;
+    }
+    // console.log(`Fetching tags with token: ${user.token}`)
+    const response = await fetch(apiBase + 'tags', {
+      headers: { 'Authorization': user.token }
+    })
+    const tagsData = await response.json();
+
+    const newTags:tagFormat[] = [];
+
+    tagsData.forEach((tag:any) => {
+      newTags.push({tag:tag, selected:false})
+    })
+
+    tags.current = newTags.slice();
+    // console.log(tags);
     setIsLoading(false);
   }
 
@@ -170,6 +191,7 @@ function App() {
         // console.log(token);
         // console.log(uid);
         await fetchPosts();
+        await fetchTags();
 
       } else {
         throw new Error(`Authentication error: ${data.message}`);
@@ -187,15 +209,35 @@ function App() {
     }
   }
 
+  function handleSearchInput(event:any) {
+    setSearch(event.target.value);
+  }
+
+  function handleToggleRegister() {
+    setIsRegistration(!isRegistration);
+  }
+
   if (user.token) {
     // console.log(token);
+    if (isLoading) {
+      return (
+        <>
+          <Header/>
+          <div className="welcome-container">
+            <h1>Loading...</h1>
+          </div>
+        </>
+      )
+    }
     
     // fetchPosts();
-    // console.log(posts);
+    console.log('posts:');
+    console.log(posts);
+    console.log('tags:');
+    console.log(tags);
 
     return (
       <>
-
         {
           modal.type === 1 &&
           <div className="overlay">
@@ -220,6 +262,8 @@ function App() {
               apiBase={apiBase}
               user={user}
               fetchPosts={fetchPosts}
+              // fetchTags={fetchTags}
+              // tags={tags}
             />
           </div>
         }
@@ -240,18 +284,31 @@ function App() {
               <option>Title (Descending)</option>
               <option>Title (Ascending)</option>
             </select>
-            <input className="main-search" placeholder="Search"></input>
+            <input className="main-search" placeholder="Search" ref={searchRef} onChange={handleSearchInput} value={search}></input>
             <button className="tag">Open</button>
             <button className="tag">Closed</button>
           </div>
           <div className="tags-container">
-            <button className="tag-selected">selected</button>
-            <button className="tag-selected">at</button>
-            <button className="tag-selected">start</button>
-            <button className="tag">tag1</button>
-            <button className="tag">tag two</button>
-            <button className="tag">the third tag</button>
-            <button className="tag">four</button>
+
+            {/* { // Iterate once first so that the tag-selected appear before the unselected tags
+              tags.current.map((tagEntry) => {
+                if (tagEntry.selected) {
+                  return <Tag key={tagEntry.tag.tid} tagEntry={tagEntry}/>
+                }
+              })
+            }
+            {
+              tags.current.map((tagEntry) => {
+                if (!tagEntry.selected) {
+                  return <Tag key={tagEntry.tag.tid} tagEntry={tagEntry}/>
+                }
+              })
+            } */}
+            {
+              tags.current.map((tagEntry) => {
+                return <Tag key={tagEntry.tag.tid} tagEntry={tagEntry}/>
+              })
+            }
             
           </div>
 
@@ -259,6 +316,8 @@ function App() {
           <PostGrid 
             posts={posts.current}
             setModal={setModal}
+            search={search}
+            tags={tags.current}
           />
           
         </div>
@@ -290,22 +349,9 @@ function App() {
         <button className="welcome-button" onClick={handleToggleRegister}>
           {!isRegistration ? 'Sign up' : 'Log in'}
         </button>
-
-
       </div>
-
     </>
   )
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -315,6 +361,3 @@ function App() {
 }
 
 export default App
-
-// References:
-// 1: https://github.com/jamezmca/backend-full-course

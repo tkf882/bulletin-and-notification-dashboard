@@ -37,8 +37,8 @@ router.post('/', (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   )
   const date = dayjs().format('YYYY/MM/DD - HH:mm:ss');
-  const tags = "";
-  // req.uierId is inserted into the request from authMiddleware
+  const tags = "intro,";
+  // req.userId is inserted into the request from authMiddleware
   const result = insertPost.run(req.userId, username, title, content, tags, date, 1, parent);
 
   res.json({pid: result.lastInsertRowid, message:"success"}) // send more info back?
@@ -56,9 +56,6 @@ router.put('/:id', (req, res) => {
   updatedPost.run(title, content, id);
 
   res.json({message:"post edited"})
-
-
-  
 })
 
 // Delete a post
