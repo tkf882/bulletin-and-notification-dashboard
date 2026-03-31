@@ -17,6 +17,14 @@
   transition:
     transform 0.05s,
     background-color 0.05s;
+
+  opacity: 0; /* This will be overridden by the opacity=1 in the last frame of the animation, thanks to animation-fill-mode forwards */
+
+  animation-name: postAnimation;
+  animation-duration: 0.4s;
+  animation-delay: 0s; /* Default value 0.2, will be incremented by 0.2 for every new post rendered top to bottom, left to right */
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
 }
 
 .post:hover {
@@ -57,4 +65,9 @@
   justify-content: space-between;
 
   width: 100%;
+}
+
+@keyframes postAnimation {
+  0%   {opacity: 0; top:100px;}
+  100% {opacity: 1; top:0px;}
 }

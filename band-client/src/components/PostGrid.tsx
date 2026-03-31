@@ -12,14 +12,14 @@ interface postGridProps {
   tags: tagFormat[];
 }
 export function PostGrid({posts, setModal, search, tags}:postGridProps) {
-  // console.log('inside post grids tag list:');
-  // console.log(tags);
+  let loadOrderKey:number = Math.random(); // this will be used as a key that increments to force reload on each post when search/sorting.
+  let loadOrder:number = 0;
 
   return (
     <div className="post-grid">
       {posts.map((p) => {
-
-        // console.log(p.title);
+        loadOrderKey += 1;
+        // console.log(`${p.title} has the  key ${loadOrderKey}`)
 
         let containsTag:boolean = false;
         let allMatch:boolean = true;
@@ -37,9 +37,6 @@ export function PostGrid({posts, setModal, search, tags}:postGridProps) {
         // console.log('tags');
         // console.log(tags);
 
-
-
-
         if (p.parent === null) {
           // if no search logic applied, show  
           // if (!containsTag && search === '') {
@@ -50,21 +47,25 @@ export function PostGrid({posts, setModal, search, tags}:postGridProps) {
             if (search !== '') {
               // Search term and tag applied
               if ((p.title.includes(search) || p.content.includes(search)) && allMatch) {
-                return <Post key={p.pid} post={p} setModal={setModal}/>
+                loadOrder += 1;
+                return <Post key={loadOrderKey} post={p} setModal={setModal} index={loadOrder}/>
               }
             } else if (allMatch) {
               // No search term, tag applied
-              return <Post key={p.pid} post={p} setModal={setModal}/>
+              loadOrder += 1;
+              return <Post key={loadOrderKey} post={p} setModal={setModal} index={loadOrder}/>
             }
           } else {
             if (search !== '') {
               // Search term, but no tags applied
               if (p.title.includes(search) || p.content.includes(search)) {
-                return <Post key={p.pid} post={p} setModal={setModal}/>
+                loadOrder += 1;
+                return <Post key={loadOrderKey} post={p} setModal={setModal} index={loadOrder}/>
               }
             } else {
               // No search and not tags applied. Show everything
-              return <Post key={p.pid} post={p} setModal={setModal}/>
+              loadOrder += 1;
+              return <Post key={loadOrderKey} post={p} setModal={setModal} index={loadOrder}/>
             }
           }
         } else {

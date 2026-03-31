@@ -31,6 +31,19 @@ db.exec(`
     tag_name TEXT UNIQUE
   )`
 )
+
+db.exec(`
+  CREATE TABLE notifications (
+    nid INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    post_id INTEGER,
+    date TEXT,
+    seen BOOLEAN DEFAULT 0,
+    FOREIGN KEY(user_id) REFERENCES users(uid),
+    FOREIGN KEY(post_id) REFERENCES posts(pid)
+  )`
+)
+
 const insertTag = db.prepare(`
   INSERT INTO tags(tag_name)
   VALUES (?)`

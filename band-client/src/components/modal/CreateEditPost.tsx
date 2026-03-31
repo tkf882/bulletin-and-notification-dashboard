@@ -95,8 +95,6 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
 
     setTagList(tagList.concat([{tag:data, selected:true}]))
 
-    // fetchTags();
-
     toggleTagPopup();
   }
 
@@ -206,10 +204,11 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
       <div className="modal-container" >
         { tagPopup &&
           <div className="create-new-tag">
+            <p>Tags cannot contain spaces or commas.</p>
             <input placeholder="New tag" ref={tagInputRef}></input>
             <button onClick={toggleTagPopup}>Cancel</button>
             <button onClick={handleAddTag}>Confirm</button>
-            <p>Tags cannot contain spaces or commas.</p>
+            
           </div>
         }
 

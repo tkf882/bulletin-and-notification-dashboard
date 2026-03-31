@@ -1,20 +1,25 @@
 import type { posts } from '../types/posts';
+// import { useEffect } from 'react';
 
 import './Post.css'
 
 interface postProps {
   post:posts;
   setModal: (value: {type: number, pid: number}) => void;
+  index: number;
 }
-export function Post({post, setModal}:postProps) {
+export function Post({post, setModal, index}:postProps) {
   // console.log(post.content);
+
+  // console.log(`${post.title} index is ${index}`)
+
 
   function handleClick() {
     setModal({type: 1, pid: post.pid});
   }
 
   return (
-    <div className="post" onClick={handleClick}>
+    <div className="post" onClick={handleClick} style={{animationDelay: `${index*0.05}s`}}>
       <div className="post-gradient"></div>
       <div className="post-top">
         <button className="tag post-tag">Open</button>

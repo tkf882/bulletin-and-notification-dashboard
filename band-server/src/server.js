@@ -7,6 +7,7 @@ import os from 'os';
 import authRoutes from './routes/authRoutes.js';
 import postRoutes from './routes/postRoutes.js';
 import tagRoutes from './routes/tagRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 import authMiddleware from './middleware/authMiddleware.js';
 
 const app = express();
@@ -42,6 +43,7 @@ app.use(
 app.use('/auth', authRoutes);
 app.use('/posts', authMiddleware, postRoutes); // First goes to authMiddleware before the actual endpoint
 app.use('/tags', authMiddleware, tagRoutes); // First goes to authMiddleware before the actual endpoint
+app.use('/notifications', authMiddleware, notificationRoutes); // First goes to authMiddleware before the actual endpoint
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`server has started on port ${PORT}`);

@@ -30,8 +30,9 @@
 .create-new-tag {
   position: absolute;
   top: -80px;
+  /* width: 450px; */
 
-  padding: 20px;
+  padding: 5px;
   margin-top: 20px;
   margin-bottom: 20px;
 

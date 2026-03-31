@@ -96,7 +96,7 @@ function App() {
     })
 
     // tags.current = newTags.slice();
-    setTags(newTags.slice());
+    setTags(structuredClone(newTags));
     // console.log(tags);
     setIsLoading(false);
   }
@@ -243,12 +243,6 @@ function App() {
         </>
       )
     }
-    
-    // fetchPosts();
-    // console.log('posts:');
-    // console.log(posts);
-    // console.log('tags:');
-    // console.log(tags);
 
     return (
       <>
@@ -303,27 +297,11 @@ function App() {
             <button className="tag">Closed</button>
           </div>
           <div className="tags-container">
-
-            {/* { // Iterate once first so that the tag-selected appear before the unselected tags
-              tags.current.map((tagEntry) => {
-                if (tagEntry.selected) {
-                  return <Tag key={tagEntry.tag.tid} tagEntry={tagEntry}/>
-                }
-              })
-            }
-            {
-              tags.current.map((tagEntry) => {
-                if (!tagEntry.selected) {
-                  return <Tag key={tagEntry.tag.tid} tagEntry={tagEntry}/>
-                }
-              })
-            } */}
             {
               tags.map((tagEntry) => {
                 return <Tag key={tagEntry.tag.tid} tags={tags} setTags={setTags} tagEntry={tagEntry}/>
               })
             }
-            
           </div>
 
 
