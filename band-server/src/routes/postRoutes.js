@@ -6,11 +6,30 @@ import dayjs from 'dayjs';
 const router = express.Router();
 
 // Get all posts
-router.get('/', (req, res) => {
+router.get('/:sort', (req, res) => {
   // const getPosts = db.prepare(`SELECT * FROM posts WHERE user_id = ?`);
   // const posts = getPosts.all(req.userId);
+  const {sort} = req.params; // 0: Date (Desc), 1: Date (Asc), 2: Title (Desc), 3: Title (Asc)
+  let type = 'title';
+  let order = 'DESC';
 
-  const getPosts = db.prepare(`SELECT * FROM posts ORDER BY date DESC`);
+  if (sort === '0') {
+    type = 'date';
+    order = 'DESC'
+  } else if (sort === '1') {
+    type = 'date';
+    order = 'ASC'
+  } else if (sort === '2') {
+    type = 'title';
+    order = 'DESC'
+  } else if (sort === '3') {
+    type = 'title';
+    order = 'ASC'
+  }
+
+  // console.log(`ORDER BY ${type} ${order}`);
+
+  const getPosts = db.prepare(`SELECT * FROM posts ORDER BY ${type} ${order}`);
   const posts = getPosts.all();
 
   // console.log(posts);
@@ -28,7 +47,7 @@ router.get('/comments/:pid', (req, res) => {
 
 // Create a new post
 router.post('/', (req, res) => {
-  const {title, content, username, parent} = req.body;
+  const {title, content, username, parent, tagString} = req.body;
 
   // console.log(`title: ${title}\ncontent: ${content}`);
 
@@ -37,7 +56,7 @@ router.post('/', (req, res) => {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   )
   const date = dayjs().format('YYYY/MM/DD - HH:mm:ss');
-  const tags = "intro,";
+  const tags = tagString;
   // req.userId is inserted into the request from authMiddleware
   const result = insertPost.run(req.userId, username, title, content, tags, date, 1, parent);
 
@@ -48,12 +67,12 @@ router.post('/', (req, res) => {
 
 // Update/edit a new post
 router.put('/:id', (req, res) => {
-  const {title, content} = req.body;
+  const {title, content, tagString} = req.body;
   const {id} = req.params; // i.e., posts/2
   // const {page} = req.query // i.e., posts/?page=1
 
-  const updatedPost = db.prepare(`UPDATE posts SET title = ?, content = ? WHERE pid = ?`);
-  updatedPost.run(title, content, id);
+  const updatedPost = db.prepare(`UPDATE posts SET title = ?, content = ?, tags = ? WHERE pid = ?`);
+  updatedPost.run(title, content, tagString, id);
 
   res.json({message:"post edited"})
 })

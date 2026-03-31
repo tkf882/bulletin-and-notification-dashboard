@@ -25,7 +25,8 @@ function App() {
   let user:users = userLocal ? JSON.parse(userLocal) : {token: null, uid: -1, username: ''};
 
   const posts = useRef([]);
-  const tags = useRef<tagFormat[]>([]); // {{tid:number, tag:string}, selected:boolean}
+  // const tags = useRef<tagFormat[]>([]); // {{tid:number, tag:string}, selected:boolean}
+  const [tags, setTags] = useState<tagFormat[]>([]);
 
   const apiBase = 'http://localhost:5000/';
   // const apiBase = 'http://192.168.1.94:5000/';
@@ -35,6 +36,8 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [modal, setModal] = useState({type: 0, pid: -1}); // 0: none, 1: view post, 2: create post, 3: edit post
   const [search, setSearch] = useState('');
+  // const [sort, setSort] = useState(0); // 0: Date (Desc), 1: Date (Asc), 2: Title (Desc), 3: Title (Asc)
+  const sortRef = useRef<any>(null);
   const searchRef = useRef<any>(null);
 
   const usernameRef = useRef(null);
@@ -54,19 +57,23 @@ function App() {
 
   async function fetchPosts() {
     setIsLoading(true);
+    // console.log(sortRef.current);
+
     if (user.token === null) {
       setIsLoading(false);
       return;
     }
+    
     // console.log(`Fetching posts with token: ${user.token}`)
     // console.log(`uid is ${uid.current}`);
-    const response = await fetch(apiBase + 'posts', {
+    console.log(`posts/${sortRef.current ? sortRef.current : 0}`);
+    const response = await fetch(apiBase + `posts/${sortRef.current ? sortRef.current : 0}`, {
       headers: { 'Authorization': user.token }
     })
     const postsData = await response.json();
 
     posts.current = postsData;
-    // console.log(posts);
+    console.log(posts);
     setIsLoading(false);
   }
 
@@ -88,7 +95,8 @@ function App() {
       newTags.push({tag:tag, selected:false})
     })
 
-    tags.current = newTags.slice();
+    // tags.current = newTags.slice();
+    setTags(newTags.slice());
     // console.log(tags);
     setIsLoading(false);
   }
@@ -165,8 +173,8 @@ function App() {
           body: JSON.stringify({ username: usernameString, password: passwordString })
         })
         data = await response.json()
-        console.log('logging in with:')
-        console.log(data);
+        // console.log('logging in with:')
+        // console.log(data);
       }
       
       if (data.token) {
@@ -217,6 +225,12 @@ function App() {
     setIsRegistration(!isRegistration);
   }
 
+  async function handleSetSort(sort:number) {
+    // setSort(sort);
+    sortRef.current = sort;
+    await fetchPosts();
+  }
+
   if (user.token) {
     // console.log(token);
     if (isLoading) {
@@ -231,10 +245,10 @@ function App() {
     }
     
     // fetchPosts();
-    console.log('posts:');
-    console.log(posts);
-    console.log('tags:');
-    console.log(tags);
+    // console.log('posts:');
+    // console.log(posts);
+    // console.log('tags:');
+    // console.log(tags);
 
     return (
       <>
@@ -262,8 +276,8 @@ function App() {
               apiBase={apiBase}
               user={user}
               fetchPosts={fetchPosts}
-              // fetchTags={fetchTags}
-              // tags={tags}
+              fetchTags={fetchTags}
+              tags={tags}
             />
           </div>
         }
@@ -279,10 +293,10 @@ function App() {
           <h1 className="main-content-header">Posts</h1>
           <div>
             <select className="main-content-select">
-              <option>Date (Descending)</option>
-              <option>Date (Ascending)</option>
-              <option>Title (Descending)</option>
-              <option>Title (Ascending)</option>
+              <option onClick={() => {handleSetSort(0)}} value="0" selected={sortRef.current === 0}>Date (Descending)</option>
+              <option  onClick={() => {handleSetSort(1)}} value="1" selected={sortRef.current === 1}>Date (Ascending)</option>
+              <option onClick={() => {handleSetSort(2)}} value="2" selected={sortRef.current === 2}>Title (Descending)</option>
+              <option onClick={() => {handleSetSort(3)}} value="3" selected={sortRef.current === 3}>Title (Ascending)</option>
             </select>
             <input className="main-search" placeholder="Search" ref={searchRef} onChange={handleSearchInput} value={search}></input>
             <button className="tag">Open</button>
@@ -305,8 +319,8 @@ function App() {
               })
             } */}
             {
-              tags.current.map((tagEntry) => {
-                return <Tag key={tagEntry.tag.tid} tagEntry={tagEntry}/>
+              tags.map((tagEntry) => {
+                return <Tag key={tagEntry.tag.tid} tags={tags} setTags={setTags} tagEntry={tagEntry}/>
               })
             }
             
@@ -317,7 +331,7 @@ function App() {
             posts={posts.current}
             setModal={setModal}
             search={search}
-            tags={tags.current}
+            tags={tags}
           />
           
         </div>

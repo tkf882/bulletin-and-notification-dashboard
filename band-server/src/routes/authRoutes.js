@@ -25,7 +25,7 @@ router.post('/register', (req, res) => {
     // Create a new post
     const postTitle = `Hello, my name is ${username}`;
     const postContent = "This is my first post.";
-    const tags = "";
+    const tags = "Intro,";
     // const date = dayjs().format('HH:mm:ss - DD/MM/YYYY');
     const date = dayjs().format('YYYY/MM/DD - HH:mm:ss');
     const insertPost = db.prepare(`

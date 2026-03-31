@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"], // Add allowed origins here
+    origin: ["http://localhost:5555"], // Add allowed origins here
   })
 );
 
@@ -46,14 +46,12 @@ app.use('/tags', authMiddleware, tagRoutes); // First goes to authMiddleware bef
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`server has started on port ${PORT}`);
 
-  const networkInterfaces = os.networkInterfaces();
-  if (networkInterfaces.eth0) {
-    console.log(networkInterfaces.eth0[0].address);
-    console.log(`local network: ${networkInterfaces.eth0[0].address}:${PORT}`);
-  } else if (networkInterfaces.wlo1) {
-    console.log(`local network: ${networkInterfaces.wlo1[0].address}:${PORT}`);
-  }
+  const networkInterfaces = os.networkInterfaces()
 
-  // console.log(`local network: http://192.168.1.94:${PORT}`);
+  Object.keys(networkInterfaces).forEach((i) => {
+    if (i !== 'lo') {
+      console.log(`${i} - local network: ${networkInterfaces[i][0].address}:${PORT}`);
+    }
+  })
 })
 

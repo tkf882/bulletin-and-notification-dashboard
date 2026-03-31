@@ -25,16 +25,24 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
   // let commentList:posts[] = [];
   // const [commentList, setCommentList] = useState([]); // update when changed
   const commentContentRef = useRef<any>(null);
+  let tags:string[] = [];
 
   let currentPost:(posts | null) = null;
   postList.forEach((post) => {
     if (post.pid === modal.pid) {
       currentPost = post;
     }
-  })
+  });
+
+  if (currentPost) {
+    const tagList:string = currentPost['tags'];
+    tags = tagList.split(",")
+    // console.log(tags);
+  }
+
+
 
   useEffect(() => {
-    console.log('here we go')
     fetchComments();
   }, [])
 
@@ -55,8 +63,8 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
     commentList.current = commentsData;
     // commentList = commentsData;
     // setCommentList(commentsData);
-    console.log('comment list from fetchComments():')
-    console.log(commentList);
+    // console.log('comment list from fetchComments():')
+    // console.log(commentList);
     setIsLoading(false);
   }
 
@@ -70,7 +78,7 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
   }
 
   async function handlePostComment() {
-    console.log('create a comment');
+    // console.log('create a comment');
     const commentElem = commentContentRef.current;
 
     if (!commentElem || !user.token || !currentPost) {return;}
@@ -89,7 +97,7 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
         'Content-Type': 'application/json',
         'Authorization': user.token
       },
-      body: JSON.stringify({ title:'', content, username:user.username, parent })
+      body: JSON.stringify({ title:'', content, username:user.username, parent, tagString:'' })
     })
     const data = await response.json();
     console.log(data);
@@ -101,7 +109,7 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
   }
 
   async function handleDelete() {
-    console.log('delete the post');
+    // console.log('delete the post');
 
     if (!currentPost || !user.token) {return;}
 
@@ -116,7 +124,6 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
     handleClose();
   }
 
-  console.log(`commment list length: ${commentList.current.length}`)
 
   return (
     <div className="modal">
@@ -132,10 +139,14 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
         {user.uid === (currentPost && (currentPost['user_id'])) && <button className="view-post-button" onClick={handleDelete}>Delete</button>}
       </div>
       <div className="modal-container">
-        {/* <h2>Tags</h2> */}
-        <button className="tag modal-tag">tag1</button>
-        <button className="tag modal-tag">tag2</button>
-        <button className="tag modal-tag">tag3</button>
+        {
+          tags.map((t) => {
+            if (t !== '') {
+              return <button key={t} className="tag modal-tag">{t}</button>
+            }
+            
+          })
+        }
       </div>
       <div className="modal-container">
         <h2>Comments</h2>
@@ -143,22 +154,22 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
           <button className="view-post-button" onClick={handlePostComment}>Submit</button>
           <p style={{color: 'red'}}>{errorMessage}</p>
 
-          {/* {
+          {
             isLoading 
             ? <p>Loading comments...</p>
             : 
-              commentList.map((com) => {
-                console.log(`comment ${com}`)
+              commentList.current.map((com) => {
+                // console.log(`comment ${com}`)
                 return <Comment key={com['pid']} com={com}/>
               })
-          } */}
+          }
 
-          {
+          {/* {
             commentList.current.map((com) => {
               console.log(`comment ${com}`)
               return <Comment key={com['pid']} com={com}/>
             })
-          }
+          } */}
 
 
       </div>

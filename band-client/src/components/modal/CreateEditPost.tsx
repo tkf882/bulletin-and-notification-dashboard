@@ -1,5 +1,7 @@
 import type { posts } from '../../types/posts';
 import type { users } from '../../types/users';
+import type { tags } from '../../types/tags';
+import type { tagFormat } from '../../types/tagFormat.ts';
 import { useState, useRef, useEffect } from 'react';
 
 import close from '../../assets/close-svg.svg';
@@ -14,13 +16,17 @@ interface createEditPostProps {
   postList: posts[];
   apiBase: string;
   user: users;
-  fetchPosts: () => void
+  fetchPosts: () => void;
+  fetchTags: () => void;
+  tags: tagFormat[];
 }
-export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchPosts}:createEditPostProps) {
+export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchPosts, fetchTags, tags}:createEditPostProps) {
   const [tagPopup, setTagPopup] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [tagList, setTagList] = useState(structuredClone(tags));
   const titleRef = useRef<any>(null);
   const contentRef = useRef<any>(null);
+  const tagInputRef = useRef<any>(null);
 
   // modal type 0: none, 1: view post, 2: create post, 3: edit post
   let currentPost:(posts | null) = null;
@@ -40,9 +46,24 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
     if (contentElem && currentPost) {
       contentElem.value = currentPost['content'];
     }
+
+    if (currentPost) {
+      // If editing, set all tags
+      const postTags = currentPost.tags.split(",");
+      const newTagList = structuredClone(tagList);
+
+      // console.log(postTags);
+
+      newTagList.forEach((tag) => {
+        if (postTags.includes(tag.tag.tag_name)) {
+          tag.selected = true;
+        }
+      })
+
+      setTagList(newTagList);
+    }
+
   }, [])
-
-
 
   function toggleTagPopup() {
     setTagPopup(!tagPopup);
@@ -50,15 +71,37 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
 
   function handleClose() {
     setModal({type: 0, pid: -1});
+    fetchTags(); // in case one was added
   }
 
-  function handleAddTag() {
-    console.log('does nothing for now');
+  async function handleAddTag() {
+    const tagElem = tagInputRef.current;
+    
+    if (!tagElem || !user.token) {return;}
+
+    const tag = tagElem.value;
+    if (tag === '' || tag.includes(',') || tag.includes(' ')) {return;}
+
+    const response = await fetch(apiBase + 'tags', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': user.token
+      },
+      body: JSON.stringify({ tag })
+    })
+    const data:tags = await response.json();
+    // console.log(data);
+
+    setTagList(tagList.concat([{tag:data, selected:true}]))
+
+    // fetchTags();
+
     toggleTagPopup();
   }
 
   async function handlePost() {
-    console.log('post');
+    // console.log('post');
 
     const titleElem = titleRef.current;
     const contentElem = contentRef.current;
@@ -74,6 +117,13 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
       setErrorMessage('Error: Please add a title or post body');
       return;
     }
+    
+    let tagString:string = '';
+    tagList.forEach((tag) => {
+      if (tag.selected) {
+        tagString = tagString + `${tag.tag.tag_name},`;
+      }
+    })
 
     const response = await fetch(apiBase + 'posts', {
       method: 'POST',
@@ -81,7 +131,7 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
         'Content-Type': 'application/json',
         'Authorization': user.token
       },
-      body: JSON.stringify({ title, content, username, parent })
+      body: JSON.stringify({ title, content, username, parent, tagString })
     })
     const data = await response.json();
     console.log(data);
@@ -93,7 +143,7 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
   }
 
   async function handleEdit() {
-    console.log('put');
+    // console.log('put');
 
     const titleElem = titleRef.current;
     const contentElem = contentRef.current;
@@ -108,17 +158,34 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
       return;
     }
 
+    let tagString:string = '';
+    tagList.forEach((tag) => {
+      if (tag.selected) {
+        tagString = tagString + `${tag.tag.tag_name},`;
+      }
+    })
+
     await fetch(apiBase + 'posts' + '/' + currentPost.pid, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': user.token
       },
-      body: JSON.stringify({ post: currentPost.pid, title, content })
+      body: JSON.stringify({ post: currentPost.pid, title, content, tagString})
     })
     fetchPosts();
 
     handleClose();
+  }
+
+  function handleSelectTag(tid:number) {
+    const newTagList = structuredClone(tagList);
+    newTagList.forEach((tag) => {
+      if (tag.tag.tid === tid) {
+        tag.selected = !tag.selected;
+      }
+    });
+    setTagList(newTagList);
   }
 
   return (
@@ -139,20 +206,20 @@ export function CreateEditPost({modal, setModal, postList, apiBase, user, fetchP
       <div className="modal-container" >
         { tagPopup &&
           <div className="create-new-tag">
-            <input placeholder="New tag"></input>
+            <input placeholder="New tag" ref={tagInputRef}></input>
             <button onClick={toggleTagPopup}>Cancel</button>
             <button onClick={handleAddTag}>Confirm</button>
+            <p>Tags cannot contain spaces or commas.</p>
           </div>
         }
 
         <button className="tag-create" onClick={toggleTagPopup}>New &#43;</button>
-        <button className="tag-selected">selected</button>
-        <button className="tag-selected">at</button>
-        <button className="tag-selected">start</button>
-        <button className="tag">tag1</button>
-        <button className="tag">tag two</button>
-        <button className="tag">the third tag</button>
-        <button className="tag">four</button>
+        {
+          tagList.map((t) => {
+            return <button key={t.tag.tid} className={t.selected ? 'tag-selected' : 'tag'} onClick={() => {handleSelectTag(t.tag.tid)}}>{t.tag.tag_name}</button>
+          })
+        }
+
       </div>
 
       <div className="create-edit-confirm-button-container">

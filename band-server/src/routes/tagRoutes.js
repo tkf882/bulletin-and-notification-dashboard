@@ -17,13 +17,13 @@ router.post('/', (req, res) => {
   const {tag} = req.body;
 
   const insertTag = db.prepare(`
-    INSERT INTO tags(tag)
+    INSERT INTO tags(tag_name)
     VALUES (?)`
   )
 
   const result = insertTag.run(tag);
 
-  res.json({pid: result.lastInsertRowid, message:"success"}) // send more info back?
+  res.json({tid: result.lastInsertRowid, tag_name:tag}) // send more info back?
 })
 
 

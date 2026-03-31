@@ -35,10 +35,9 @@ const insertTag = db.prepare(`
   INSERT INTO tags(tag_name)
   VALUES (?)`
 )
-insertTag.run('intro'); // default tag for new account posts
-insertTag.run('test'); // default tag for new account posts
-insertTag.run('monkey'); // default tag for new account posts
-insertTag.run('coe'); // default tag for new account posts
-insertTag.run('fish'); // default tag for new account posts
+insertTag.run('Intro'); // default tag for new account posts
+insertTag.run('Discussion');
+insertTag.run('Question');
+insertTag.run('Announcement');
 
 export default db
