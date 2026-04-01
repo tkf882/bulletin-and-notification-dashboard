@@ -9,6 +9,8 @@ router.get('/', (req, res) => {
   const getTags = db.prepare(`SELECT * FROM tags ORDER BY tag_name ASC`);
   const tags = getTags.all();
 
+  console.log(`Getting all tags for ${req.userId}`);
+
   res.json(tags);
 })
 
@@ -22,6 +24,8 @@ router.post('/', (req, res) => {
   )
 
   const result = insertTag.run(tag);
+
+  console.log(`Creating tag from user ${req.userId}. New tag ${result.lastInsertRowid}`);
 
   res.json({tid: result.lastInsertRowid, tag_name:tag}) // send more info back?
 })

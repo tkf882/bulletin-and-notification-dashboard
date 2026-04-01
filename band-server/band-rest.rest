@@ -37,47 +37,85 @@ Content-Type: application/json
   "password": "wrongpass"
 }
 
+
+
+
+
+
+
 ### Fetch all posts GET /posts (protected)
-GET http://localhost:5000/posts
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0MTQxMTA2LCJleHAiOjE3NzQyMjc1MDZ9.7hPdMpvTj_ckBjbtVWq1koQkt3D0BvdcpShOpGGSJks
+GET http://localhost:5000/posts/all?pid=-1&sort=0
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc1MDg1MDc4LCJleHAiOjE3NzUxNzE0Nzh9.i9E07S5oMeD6hTwzSS0VPzkNK2AQC283pqFdBAZhHD8
 
 ### Creates a new post POST /posts (protected)
 POST http://localhost:5000/posts
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0MTQxMTA2LCJleHAiOjE3NzQyMjc1MDZ9.7hPdMpvTj_ckBjbtVWq1koQkt3D0BvdcpShOpGGSJks
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzc1MDgzNzYxLCJleHAiOjE3NzUxNzAxNjF9.gYIQBfmLqqiwqpq-TtiqmRXh3ph5ZKB7e6pnmhNMYPs
 Content-Type: application/json
 
 {
   "title": "title",
   "content": "this is the post content",
   "username": "sisyphus@gmail.com",
-  "parent": null
+  "parent": null,
+  "tagString": "Intro"
 }
 
 ### Update a post PUT /posts/:id (protected)
-PUT http://localhost:5000/posts/2
+PUT http://localhost:5000/posts/1
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0MTQxMTA2LCJleHAiOjE3NzQyMjc1MDZ9.7hPdMpvTj_ckBjbtVWq1koQkt3D0BvdcpShOpGGSJks
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc1MDg1MDc4LCJleHAiOjE3NzUxNzE0Nzh9.i9E07S5oMeD6hTwzSS0VPzkNK2AQC283pqFdBAZhHD8
 
 {
   "title": "new title",
-  "content": "new content"
+  "content": "new content",
+  "tagString": "Discussion"
 }
 
 
 ### Delete a post DELETE /posts/:id (protected)
-DELETE http://localhost:5000/posts/2
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0MTQxMTA2LCJleHAiOjE3NzQyMjc1MDZ9.7hPdMpvTj_ckBjbtVWq1koQkt3D0BvdcpShOpGGSJks
+DELETE http://localhost:5000/posts/1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc1MDg1MDc4LCJleHAiOjE3NzUxNzE0Nzh9.i9E07S5oMeD6hTwzSS0VPzkNK2AQC283pqFdBAZhHD8
+
+
+### Create a comment on post with pid 1 /posts
+POST http://localhost:5000/posts
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDcwMjYyLCJleHAiOjE3NzUxNTY2NjJ9.XgwvWaEKEWx0JClHT6NSxqZGDxy73yF4HSQTbB4ldcE
+Content-Type: application/json
+
+{
+  "title": "",
+  "content": "Comment",
+  "username": "sisyphus@gmail.com",
+  "parent": 1,
+  "tagString": ""
+}
+
+### Get comments on a post /posts/comments?pid=1 (protected)
+GET http://localhost:5000/posts/comments?pid=1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDcwMjYyLCJleHAiOjE3NzUxNTY2NjJ9.XgwvWaEKEWx0JClHT6NSxqZGDxy73yF4HSQTbB4ldcE
+
+
+
+
+
 
 ### Send a notification POST /notifications/ (protected)
 POST http://localhost:5000/notifications
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0OTk1MjE0LCJleHAiOjE3NzUwODE2MTR9.PJqA9XNtGZx56EahsplIKF7_yfZBoEDaEQlF1pKWqMA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDAzMjY3LCJleHAiOjE3NzUwODk2Njd9.FgMhTlvGHzVgahH2dWRwuW1ZwuerkjZvL2VL8FoaZJ0
 
 {
   "user_id": "1",
-  "post_id": "2"
+  "post_id": "1",
+  "content_post_id": "2",
+  "message": "something"
 }
 
 ### Fetch all notifs GET /notifications (protected)
 GET http://localhost:5000/notifications
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc0OTk1MjE0LCJleHAiOjE3NzUwODE2MTR9.PJqA9XNtGZx56EahsplIKF7_yfZBoEDaEQlF1pKWqMA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDAzMjY3LCJleHAiOjE3NzUwODk2Njd9.FgMhTlvGHzVgahH2dWRwuW1ZwuerkjZvL2VL8FoaZJ0
+
+### Update a notification PUT /notifications/:nid (protected)
+PUT http://localhost:5000/notifications/2
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDAzMjY3LCJleHAiOjE3NzUwODk2Njd9.FgMhTlvGHzVgahH2dWRwuW1ZwuerkjZvL2VL8FoaZJ0

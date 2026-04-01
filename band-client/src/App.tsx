@@ -7,7 +7,7 @@ import { ViewPost } from './components/modal/ViewPost';
 import { CreateEditPost } from './components/modal/CreateEditPost';
 
 import { useState, useRef, useEffect } from 'react'
-// import type { posts } from './types/posts.ts';
+import type { posts } from './types/posts.ts';
 import type { users } from './types/users.ts';
 // import type { tags } from './types/tags.ts';
 import type { tagFormat } from './types/tagFormat.ts';
@@ -22,9 +22,11 @@ function App() {
   //   username: localStorage.getItem('username')
   // }
   const userLocal = localStorage.getItem('userInfo');
-  let user:users = userLocal ? JSON.parse(userLocal) : {token: null, uid: -1, username: ''};
+  let user: users = userLocal ? JSON.parse(userLocal) : { token: null, uid: -1, username: '' };
+  console.log(`token: ${user.token}`);
 
-  const posts = useRef([]);
+  const posts = useRef<posts[]>([]);
+  // const [posts, setPosts] = useState<posts[]>([]);
   // const tags = useRef<tagFormat[]>([]); // {{tid:number, tag:string}, selected:boolean}
   const [tags, setTags] = useState<tagFormat[]>([]);
 
@@ -34,7 +36,7 @@ function App() {
   const [isRegistration, setIsRegistration] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [modal, setModal] = useState({type: 0, pid: -1}); // 0: none, 1: view post, 2: create post, 3: edit post
+  const [modal, setModal] = useState({ type: 0, pid: -1 }); // 0: none, 1: view post, 2: create post, 3: edit post
   const [search, setSearch] = useState('');
   // const [sort, setSort] = useState(0); // 0: Date (Desc), 1: Date (Asc), 2: Title (Desc), 3: Title (Asc)
   const sortRef = useRef<any>(null);
@@ -43,11 +45,23 @@ function App() {
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
 
+  const intervalIdRef = useRef<ReturnType<typeof setInterval> | undefined>(undefined);
+
   useEffect(() => {
     // token = localStorage.getItem('token');
     // setToken(localStorage.getItem('token'));
     fetchPosts();
     fetchTags();
+
+    // intervalIdRef.current = setInterval(async () => {
+    //   fetchPosts();
+    //   // fetchTags();
+    // }, 5000)
+
+    return () => {
+      console.log('return from app useeffect');
+      clearInterval(intervalIdRef.current);
+    }
   }, [])
 
   // fix async: Dont need fetch functions in other components. Refresh page after authentication valid to activate this use effect again
@@ -59,21 +73,34 @@ function App() {
     setIsLoading(true);
     // console.log(sortRef.current);
 
+    console.log('Fetching posts.')
+
     if (user.token === null) {
       setIsLoading(false);
       return;
     }
-    
-    // console.log(`Fetching posts with token: ${user.token}`)
-    // console.log(`uid is ${uid.current}`);
-    console.log(`posts/${sortRef.current ? sortRef.current : 0}`);
-    const response = await fetch(apiBase + `posts/${sortRef.current ? sortRef.current : 0}`, {
+
+    let mostRecentPID: number = -1;
+    // Depending on the sort order, the first entry in posts may not be the most recent.
+    // posts.current.forEach((post) => {
+    //   if (post.pid > mostRecentPID) {
+    //     mostRecentPID = post.pid;
+    //   }
+    // })
+
+    // console.log(`posts/${sortRef.current ? sortRef.current : 0}/${mostRecentPID}`);
+    const url: string = `${apiBase}posts/all?pid=${mostRecentPID}&sort=${sortRef.current ? sortRef.current : 0}`;
+    console.log(url)
+    const response = await fetch(url, {
       headers: { 'Authorization': user.token }
     })
     const postsData = await response.json();
+    console.log('posts data')
+    console.log(postsData);
 
     posts.current = postsData;
-    console.log(posts);
+
+    // console.log(posts);
     setIsLoading(false);
   }
 
@@ -89,10 +116,10 @@ function App() {
     })
     const tagsData = await response.json();
 
-    const newTags:tagFormat[] = [];
+    const newTags: tagFormat[] = [];
 
-    tagsData.forEach((tag:any) => {
-      newTags.push({tag:tag, selected:false})
+    tagsData.forEach((tag: any) => {
+      newTags.push({ tag: tag, selected: false })
     })
 
     // tags.current = newTags.slice();
@@ -119,10 +146,10 @@ function App() {
       return;
     }
 
-    const usernameString:string = usernameElement['value'];
-    const passwordString:string = passwordElement['value'];
+    const usernameString: string = usernameElement['value'];
+    const passwordString: string = passwordElement['value'];
 
-    
+
     if (isRegistration) {
       // Username checks
       if (usernameString.includes(' ')) {
@@ -176,7 +203,7 @@ function App() {
         // console.log('logging in with:')
         // console.log(data);
       }
-      
+
       if (data.token) {
         // setToken(data.token);
         user.token = data.token;
@@ -189,15 +216,6 @@ function App() {
           username: data.username
         }));
 
-
-
-        // localStorage.setItem('token', data.token);
-        // localStorage.setItem('uid', data.uid);
-        // localStorage.setItem('username', data.username);
-
-        // setIsLoading(true);
-        // console.log(token);
-        // console.log(uid);
         await fetchPosts();
         await fetchTags();
 
@@ -217,7 +235,7 @@ function App() {
     }
   }
 
-  function handleSearchInput(event:any) {
+  function handleSearchInput(event: any) {
     setSearch(event.target.value);
   }
 
@@ -225,7 +243,7 @@ function App() {
     setIsRegistration(!isRegistration);
   }
 
-  async function handleSetSort(sort:number) {
+  async function handleSetSort(sort: number) {
     // setSort(sort);
     sortRef.current = sort;
     await fetchPosts();
@@ -236,7 +254,7 @@ function App() {
     if (isLoading) {
       return (
         <>
-          <Header/>
+          <Header />
           <div className="welcome-container">
             <h1>Loading...</h1>
           </div>
@@ -246,6 +264,7 @@ function App() {
 
     return (
       <>
+        <title>B&ND - Bulletin & Notification Dashboard</title>
         {
           modal.type === 1 &&
           <div className="overlay">
@@ -276,21 +295,23 @@ function App() {
           </div>
         }
 
-        <Header/>
+        <Header />
 
         <Sidebar
           setModal={setModal}
           user={user}
+          apiBase={apiBase}
+          postList={posts.current}
         />
 
         <div className="main-content">
           <h1 className="main-content-header">Posts</h1>
           <div>
-            <select className="main-content-select">
-              <option onClick={() => {handleSetSort(0)}} value="0" selected={sortRef.current === 0}>Date (Descending)</option>
-              <option  onClick={() => {handleSetSort(1)}} value="1" selected={sortRef.current === 1}>Date (Ascending)</option>
-              <option onClick={() => {handleSetSort(2)}} value="2" selected={sortRef.current === 2}>Title (Descending)</option>
-              <option onClick={() => {handleSetSort(3)}} value="3" selected={sortRef.current === 3}>Title (Ascending)</option>
+            <select className="main-content-select" defaultValue={sortRef.current || "0"}>
+              <option onClick={() => { handleSetSort(0) }} value="0">Date (Descending)</option>
+              <option onClick={() => { handleSetSort(1) }} value="1">Date (Ascending)</option>
+              <option onClick={() => { handleSetSort(2) }} value="2">Title (Descending)</option>
+              <option onClick={() => { handleSetSort(3) }} value="3">Title (Ascending)</option>
             </select>
             <input className="main-search" placeholder="Search" ref={searchRef} onChange={handleSearchInput} value={search}></input>
             <button className="tag">Open</button>
@@ -299,19 +320,19 @@ function App() {
           <div className="tags-container">
             {
               tags.map((tagEntry) => {
-                return <Tag key={tagEntry.tag.tid} tags={tags} setTags={setTags} tagEntry={tagEntry}/>
+                return <Tag key={tagEntry.tag.tid} tags={tags} setTags={setTags} tagEntry={tagEntry} />
               })
             }
           </div>
 
 
-          <PostGrid 
+          <PostGrid
             posts={posts.current}
             setModal={setModal}
             search={search}
             tags={tags}
           />
-          
+
         </div>
 
       </>
@@ -320,7 +341,7 @@ function App() {
 
   return (
     <>
-      <Header/>
+      <Header />
       <div className="welcome-container">
         <h1>{isRegistration ? 'Sign up!' : 'Log in!'}</h1>
 
@@ -330,11 +351,11 @@ function App() {
           <p className="welcome-text">Password</p>
           <input className="welcome-input" placeholder="********" type="password" ref={passwordRef}></input>
         </div>
-        <p style={{color: 'red'}}>{errorMessage}</p>
+        <p style={{ color: 'red' }}>{errorMessage}</p>
         <p>{isLoading ? 'Loading...' : ''}</p>
-        <div style={{marginBottom: '30px'}}>
-          <button className="welcome-button" 
-            onClick={handleAuthenticate}>{isRegistration ? 'Sign up' : 'Log in'}</button> 
+        <div style={{ marginBottom: '30px' }}>
+          <button className="welcome-button"
+            onClick={handleAuthenticate}>{isRegistration ? 'Sign up' : 'Log in'}</button>
         </div>
 
         <h2>{!isRegistration ? 'Don\'t have an account?' : 'Already have an account?'}</h2>

@@ -1,0 +1,19 @@
+.notification {
+  background-color: rgb(44, 45, 49);
+
+  width: 100%;
+
+  box-sizing: border-box;
+
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.seen {
+  background-color: rgba(0,0,0,0);
+  border-style:dashed;
+  border-width: 2px;
+  border-color: rgb(29, 30, 34);
+
+}

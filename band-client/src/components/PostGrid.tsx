@@ -12,7 +12,8 @@ interface postGridProps {
   tags: tagFormat[];
 }
 export function PostGrid({posts, setModal, search, tags}:postGridProps) {
-  let loadOrderKey:number = Math.random(); // this will be used as a key that increments to force reload on each post when search/sorting.
+  // let loadOrderKey:number = Math.random(); // this will be used as a key that increments to force reload on each post when search/sorting.
+  let loadOrderKey:number = 1;
   let loadOrder:number = 0;
 
   return (

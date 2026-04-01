@@ -52,7 +52,9 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
       return;
     }
 
-    const response = await fetch(apiBase + `posts/comments/${currentPost.pid}`, {
+    const url:string = `${apiBase}posts/comments?pid=${currentPost.pid}`;
+    console.log(url)
+    const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': user.token
@@ -85,6 +87,7 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
 
     const content = commentElem.value;
     const parent:(number | null) = currentPost.pid;
+    console.log(`parent is: ${parent}`);
 
     if (content === '') {
       setErrorMessage('Error: Please enter text into comment box');
@@ -105,6 +108,8 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
     commentElem.value = '';
     setErrorMessage('');
 
+    await handleNotify(data.pid, content);
+
     await fetchComments();
   }
 
@@ -123,6 +128,28 @@ export function ViewPost({modal, setModal, postList, user, apiBase, fetchPosts}:
     fetchPosts();
     handleClose();
   }
+
+  async function handleNotify(content_post_id:number, content:string) {
+    // Create notification for the comment owner, unless its the user's own post
+
+    if (!user.token || !currentPost) {return;}
+    if (currentPost.user_id === user.uid) {return;} 
+
+    const message:string = `${user.username} commented "${content}" on your post "${currentPost.title}"`;
+
+    const response = await fetch(apiBase + 'notifications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': user.token
+      },
+      body: JSON.stringify({ user_id: currentPost.user_id, post_id: currentPost.pid, content_post_id: content_post_id, message: message })
+    })
+    const data = await response.json();
+    console.log(data);
+
+  }
+
 
 
   return (

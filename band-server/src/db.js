@@ -32,15 +32,21 @@ db.exec(`
   )`
 )
 
+// user_id: who the notification is for
+// post_id: the post in question (owned by user_id)
+// content_post_id: The post that notifies the user (i.e., the comment)
 db.exec(`
   CREATE TABLE notifications (
     nid INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     post_id INTEGER,
+    content_post_id INTEGER,
+    message TEXT,
     date TEXT,
     seen BOOLEAN DEFAULT 0,
     FOREIGN KEY(user_id) REFERENCES users(uid),
-    FOREIGN KEY(post_id) REFERENCES posts(pid)
+    FOREIGN KEY(post_id) REFERENCES posts(pid),
+    FOREIGN KEY(content_post_id) REFERENCES posts(pid)
   )`
 )
 
