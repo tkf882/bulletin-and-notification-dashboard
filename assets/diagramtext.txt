@@ -1,0 +1,41 @@
+https://databasediagram.com/app
+
+Table Users {
+  uid INTEGER [pk]
+  username TEXT
+  hashed_password TEXT
+}
+
+Table Posts {
+  pid INTEGER [pk]
+  user_id INTEGER
+  username TEXT
+  title TEXT
+  content TEXT
+  tags TEXT
+  date TEXT
+  status BOOLEAN
+  parent INTEGER
+}
+
+Table Tags {
+  tid integer [primary key]
+  tag_name TEXT
+}
+
+Table Notifications {
+  nid INTEGER [pk]
+  user_id INTEGER
+  post_id INTEGER
+  content_post_id INTEGER
+  message TEXT
+  date TEXT
+  seen BOOLEAN
+}
+
+
+ref: Posts.user_id > Users.uid
+ref: Posts.parent > Users.uid
+ref: Notifications.user_id > Users.uid
+ref: Notifications.post_id > Posts.pid
+ref: Notifications.content_post_id > Posts.pid

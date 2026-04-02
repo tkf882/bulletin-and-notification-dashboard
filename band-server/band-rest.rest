@@ -45,11 +45,11 @@ Content-Type: application/json
 
 ### Fetch all posts GET /posts (protected)
 GET http://localhost:5000/posts/all?pid=-1&sort=0
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc1MDg1MDc4LCJleHAiOjE3NzUxNzE0Nzh9.i9E07S5oMeD6hTwzSS0VPzkNK2AQC283pqFdBAZhHD8
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MTY3MjM1LCJleHAiOjE3NzUyNTM2MzV9.L99WDuu13LHRFM00p7z_hSUsFZNiIDOJGNG0UXH5PPE
 
 ### Creates a new post POST /posts (protected)
 POST http://localhost:5000/posts
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNzc1MDgzNzYxLCJleHAiOjE3NzUxNzAxNjF9.gYIQBfmLqqiwqpq-TtiqmRXh3ph5ZKB7e6pnmhNMYPs
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MTY0NDY1LCJleHAiOjE3NzUyNTA4NjV9.tWDaw92sVvRfqn6lhZbR2Q3KM95xoaGYJT7edKMuhbQ
 Content-Type: application/json
 
 {
@@ -63,7 +63,7 @@ Content-Type: application/json
 ### Update a post PUT /posts/:id (protected)
 PUT http://localhost:5000/posts/1
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc1MDg1MDc4LCJleHAiOjE3NzUxNzE0Nzh9.i9E07S5oMeD6hTwzSS0VPzkNK2AQC283pqFdBAZhHD8
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MTY2ODMxLCJleHAiOjE3NzUyNTMyMzF9.w7T5fprLjksP7cwyZNnug-Q-QfYs40-0RD6udwxv8Ak
 
 {
   "title": "new title",
@@ -74,7 +74,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc1MDg1
 
 ### Delete a post DELETE /posts/:id (protected)
 DELETE http://localhost:5000/posts/1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc1MDg1MDc4LCJleHAiOjE3NzUxNzE0Nzh9.i9E07S5oMeD6hTwzSS0VPzkNK2AQC283pqFdBAZhHD8
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MTY3MjM1LCJleHAiOjE3NzUyNTM2MzV9.L99WDuu13LHRFM00p7z_hSUsFZNiIDOJGNG0UXH5PPE
 
 
 ### Create a comment on post with pid 1 /posts
@@ -97,12 +97,23 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDcw
 
 
 
+### Get all tags GET /tags (protected)
+GET http://localhost:5000/tags
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MTYzMDY0LCJleHAiOjE3NzUyNDk0NjR9.uDcKK7H9fBalCBnhg93do7ksx7JJ-8Fb6_T9Cd4EHQc
 
+### Create a new tag POST /tags (protected)
+POST http://localhost:5000/tags
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzc1MTY0NjM1LCJleHAiOjE3NzUyNTEwMzV9.iw8Ch5fwyueV8W_rXi9OpbAIVWgdtMvX4avybhYavWU
+Content-Type: application/json
+
+{
+  "tag": "newTag"
+}
 
 ### Send a notification POST /notifications/ (protected)
 POST http://localhost:5000/notifications
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDAzMjY3LCJleHAiOjE3NzUwODk2Njd9.FgMhTlvGHzVgahH2dWRwuW1ZwuerkjZvL2VL8FoaZJ0
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MTYzNDM0LCJleHAiOjE3NzUyNDk4MzR9.3CRFbvmR081-xmDWMtaAzdJCM4TuBqyQyXlQtjZUbkI
 
 {
   "user_id": "1",
@@ -113,9 +124,9 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDAz
 
 ### Fetch all notifs GET /notifications (protected)
 GET http://localhost:5000/notifications
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDAzMjY3LCJleHAiOjE3NzUwODk2Njd9.FgMhTlvGHzVgahH2dWRwuW1ZwuerkjZvL2VL8FoaZJ0
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MTYzNDM0LCJleHAiOjE3NzUyNDk4MzR9.3CRFbvmR081-xmDWMtaAzdJCM4TuBqyQyXlQtjZUbkI
 
 ### Update a notification PUT /notifications/:nid (protected)
-PUT http://localhost:5000/notifications/2
+PUT http://localhost:5000/notifications/1
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MDAzMjY3LCJleHAiOjE3NzUwODk2Njd9.FgMhTlvGHzVgahH2dWRwuW1ZwuerkjZvL2VL8FoaZJ0
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzc1MTYzNDM0LCJleHAiOjE3NzUyNDk4MzR9.3CRFbvmR081-xmDWMtaAzdJCM4TuBqyQyXlQtjZUbkI
