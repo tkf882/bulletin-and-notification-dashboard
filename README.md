@@ -1,2 +1,2 @@
-# bulletin-and-notification-dashboard
-fullstack project
+# Documentation page
+Refer to this link: 
