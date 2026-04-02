@@ -9,4 +9,4 @@ fullstack project
 Video demo:
 
 
-<video src="assets/demo.mp4" controls></video>
+[![alt text](https://drive.google.com/file/d/1aYN_ZDtnX0nmU3gnD7zyFWaBzbjBMdNX)](https://drive.google.com/file/d/1aYN_ZDtnX0nmU3gnD7zyFWaBzbjBMdNX)
