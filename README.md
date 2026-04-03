@@ -19,7 +19,7 @@ In band-server, run `npm run dev` or `node --watch --env-file=.env --experimenta
 
 Both will output what local IP address the server is running on in the terminal. 
 
-## Documentation:
+## Backend Documentation:
 https://tkf882.github.io/bulletin-and-notification-dashboard/
 
 ## Database
